@@ -128,8 +128,8 @@ $ npm install
 ###### To start in local development mode with auto reload feature on code change.
 
 ```sh
-# To run local server
-$ cp .env .env.local
+# To run on local server
+$ cp .env .env.local // and configure db, log and necessary settings.
 $ npm run local
 ```
 
