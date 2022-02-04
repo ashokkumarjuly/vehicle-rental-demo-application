@@ -1,0 +1,626 @@
+openapi: 3.0.1
+info:
+  title: Vechicle Rent API
+  description: Bike Rent API for Node Server
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Authentication server (Local)
+  - url: http://localhost:3000/api/v1
+    description: API server v1 (Local)
+tags:
+  - name: Auth
+    description: Authentication APIs
+  - name: Master
+    description: Master APIs
+  - name: User
+    description: User related operations
+  - name: Vehicle
+    description: User related operations
+  - name: Rental
+    description: User related operations
+  - name: Invoice
+    description: User related operations
+
+paths:
+  /master:
+    get:
+      tags:
+        - Master
+      summary: Get Master
+      description: Returns Master
+      operationId: getMaster
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          fuel_type_dropdown:
+                            type: array
+                            items:
+                              type: object
+                          vehicle_type_dropdown:
+                            type: array
+                            items:
+                              type: object
+                          variants_dropdown:
+                            type: array
+                            items:
+                              type: object
+        "400":
+          description: Some parameters may contain invalid values
+          content: {}
+        "401":
+          description: Admin access only
+          content: {}
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login with email and password
+      operationId: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email Id
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 100
+                  description: Password
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          user:
+                            $ref: "#/components/schemas/User"
+                          token:
+                            type: string
+                          refreshToken:
+                            type: string
+  /users/:
+    post:
+      tags:
+        - User
+      summary: Create User
+      operationId: CreateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        "200":
+          description: Successfull Response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          uid:
+                            type: string
+      security:
+        - JWT: []
+  /users/{uid}:
+    get:
+      tags:
+        - User
+      summary: Get User by Id
+      description: Returns a single user
+      operationId: getUserById
+      parameters:
+        - name: uid
+          in: path
+          description: UID of user to return
+          required: true
+          schema:
+            type: string
+            format: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          user:
+                            $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized" # <-----
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - JWT: []
+  /vehicles/:
+    post:
+      tags:
+        - Vehicle
+      summary: Create vehicle
+      operationId: Createvehicle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VehicleCreate"
+      responses:
+        "200":
+          description: Successfull Response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          uid:
+                            type: string
+                          id:
+                            type: integer
+      security:
+        - JWT: []
+  /vehicles/{uid}:
+    put:
+      tags:
+        - Vehicle
+      summary: Update vehicle
+      operationId: updateCehicle
+      parameters:
+        - name: uid
+          in: path
+          description: UID of vehicle to update
+          required: true
+          schema:
+            type: string
+            format: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VehicleUpdate"
+      responses:
+        "200":
+          description: Successfull Response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          uid:
+                            type: string
+      security:
+        - JWT: []
+  /vehicles:
+    get:
+      tags:
+        - Vehicle
+      summary: Get vehicles
+      description: Returns a array of vehicles
+      operationId: getArtists
+      parameters:
+        - $ref: "#/components/parameters/offsetParam"
+        - $ref: "#/components/parameters/limitParam"
+        - $ref: "#/components/parameters/searchTermParam"
+        - in: query
+          name: dropdown
+          schema:
+            type: boolean
+            default: false
+        - in: query
+          name: filter
+          style: deepObject
+          allowReserved: true
+          schema:
+            type: object
+            properties:
+              variant_value:
+                type: string
+              status:
+                type: integer
+              rented_user_id:
+                type: integer
+              is_overdue:
+                type: boolean
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          count:
+                            type: number
+                          data:
+                            type: "array"
+                            items:
+                              $ref: "#/components/schemas/VehicleOne"
+        "401":
+          $ref: "#/components/responses/Unauthorized" # <-----
+        "404":
+          $ref: "#/components/responses/NotFound"
+      security:
+        - JWT: []
+  /rentals/:
+    post:
+      tags:
+        - Rental
+      summary: Create rental for a vehicle
+      operationId: CreateRental
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RentalCreate"
+      responses:
+        "200":
+          description: Successfull Response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          uid:
+                            type: string
+      security:
+        - JWT: []
+  /invoice/:
+    post:
+      tags:
+        - Invoice
+      summary: Create invoice for a rental
+      operationId: CreateInvoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceCreate"
+      responses:
+        "200":
+          description: Successfull Response
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/IAPIResponse"
+                  - properties:
+                      body:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+      security:
+        - JWT: []
+
+components:
+  securitySchemes:
+    JWT:
+      type: apiKey
+      name: Authorization
+      in: header
+  parameters:
+    offsetParam:
+      in: query
+      name: page
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      description: Page number.
+    limitParam:
+      in: query
+      name: limit
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+      description: The numbers of items to return.
+    searchTermParam:
+      in: query
+      name: term
+      required: false
+      schema:
+        type: string
+      description: search term.
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/IAPIErrorResponse"
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/IAPIErrorResponse"
+  schemas:
+    IAPIErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          readOnly: true
+          default: false
+        message:
+          type: string
+          readOnly: true
+        error:
+          type: object
+          readOnly: true
+      required:
+        - code
+        - message
+    IAPIResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        body:
+          oneOf:
+            - type: object
+          readOnly: true
+    User:
+      allOf:
+        - properties:
+            id:
+              type: interger
+              format: uuid
+            uid:
+              type: string
+              format: uuid
+            full_name:
+              type: string
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+              nullable: true
+              format: email
+            status:
+              type: integer
+              format: int32
+            role_id:
+              type: integer
+              format: int32
+            customer_preferred_size:
+              type: integer
+              format: int32
+            phone_code:
+              type: string
+            phone_no:
+              type: string
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+            zip_code:
+              type: string
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            available_amount:
+              type: number
+    UserCreate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        password:
+          type: string
+        role_id:
+          type: integer
+        phone_code:
+          type: string
+        phone_no:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        zip_code:
+          type: string
+        customer_preferred_size:
+          type: integer
+        wallet_amount:
+          type: integer
+    VehicleOne:
+      type: object
+      properties:
+        uid:
+          type: string
+          format: uuid
+        sku:
+          type: string
+        status:
+          type: integer
+        fuel_type_id:
+          type: integer
+        vehicle_model_id:
+          type: integer
+        vehicle_variant_id:
+          type: integer
+        vehicle_no:
+          type: string
+        hourly_rent:
+          type: number
+        daily_rent:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        vehicle_rentals:
+          $ref: "#/components/schemas/VehicleRentals"
+
+    VehicleCreate:
+      type: object
+      properties:
+        sku:
+          type: string
+          format: uuid
+        fuel_type_id:
+          type: integer
+        vehicle_no:
+          type: string
+        hourly_rent:
+          type: integer
+        daily_rent:
+          type: integer
+        vehicle_type:
+          type: integer
+        model:
+          type: string
+        make:
+          type: string
+        vehicle_variant_id:
+          type: integer
+    VehicleUpdate:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+    RentalCreate:
+      type: object
+      properties:
+        vehicle_id:
+          type: integer
+        user_id:
+          type: integer
+        planned_start_date:
+          type: string
+          format: date-time
+        actual_start_date:
+          type: string
+          format: date-time
+        planned_return_date:
+          type: string
+          format: date-time
+        actual_return_date:
+          type: string
+          format: date-time
+        initial_amount:
+          type: number
+        rent_type:
+          type: integer
+    VehicleRentals:
+      type: object
+      properties:
+        vehicle_id:
+          format: integer
+        user_id:
+          type: integer
+        planned_start_date:
+          type: string
+          format: date-time
+        actual_start_date:
+          type: string
+          format: date-time
+        planned_return_date:
+          type: string
+          format: date-time
+        actual_return_date:
+          type: string
+          format: date-time
+        is_active:
+          type: integer
+        initial_amount:
+          type: number
+        total_amount:
+          type: number
+        payment_status:
+          type: integer
+        rent_type:
+          type: integer
+        customer:
+          $ref: "#/components/schemas/User"
+    InvoiceCreate:
+      type: object
+      properties:
+        rental_id:
+          type: integer
+        user_id:
+          type: integer
+        total_amount:
+          type: number
+        sub_total_amount:
+          type: number
+        payment_method:
+          type: string
+        transaction_id:
+          type: string

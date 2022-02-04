@@ -1,0 +1,112 @@
+{
+    "general": {
+        "label": {
+            "user": "User",
+            "Resource": "Resource",
+            "Artist": "Artist"
+        },
+        "success": {
+            "list": "Record Success."
+        },
+        "error": {
+            "list": "Record Success failed.",
+            "JoiValidationError": "API Validation Error: \n {{detail}}",
+            "SequelizeDatabaseError": "Database Error: \n {{detail}}",
+            "SequelizeUniqueConstraintError": "Unique Constraint Error: \n {{detail}}",
+            "SequelizeForeignKeyConstraintError": "ForeignKey Constraint Error: \n {{detail}}",
+            "modelNotFound": "{{entityName}} record not found",
+            "expiredJwtTokenError": "JWT token expired",
+            "expiredResetPasswordToken": "Reset Password token expired.",
+            "forbidden": "Forbidden: Not allowed to access {{detail}}",
+            "invalidCredentials": "Credential {{entityName}} is invalid",
+            "invalidJwtToken": "invalid JWT token",
+            "invalidResetPasswordToken": "Invalid Reset Password Token",
+            "missingJwtToken": "Missing JWT Token",
+            "missingJwtTokenExtractor": "Missing JWT token extractor",
+            "notFound": "{{entityName}} Resouce not found",
+            "unAuthorized": "You are not authorized to module {{entityName}}",
+            "recordAlreadyExist": "{{entityName}} Record already exist.",
+            "destinationNotEmpty": "Destination path should not be empty.",
+            "destinationThumbNotEmpty": "Thumbnail destination path should not be empty.",
+            "deleteLocalImage": "Failed to delete image on server. {{entity}}",
+            "blockchainNotEnabled": "BlockChain is not enabled in server."
+        }
+    },
+    "auth": {
+        "success": {
+            "loginSecret": "We have sent you a verification code, please check your email.",
+            "register": "registration is successful",
+            "logout": "You have logged out of the application",
+            "forgetPassword": "An email has been sent to the provided address ({{email}}) containing a link with your recovery token.",
+            "resetPassword": "Your password has been changed sucessfully. You can log in.",
+            "showEmailVerification": "Email Verification token valid for ... user: {{uid}}",
+            "activateEmail": "Your email verified",
+            "login": "Verified successfully",
+            "resendLoginSecret": "OTP has been successfully re-sent"
+        },
+        "error": {
+            "forgetPassword": "user with {{email}} - tried to remind the password, but email does not exist.",
+            "emailNotVerfied": "Authentication failed. Email address not verified.",
+            "InvalidUserAccountStatus": "Invalid user account status",
+            "invalidVerificationCode": "Invalid verification code"
+        }
+    },
+    "user": {
+        "success": {
+            "createUser": "User has been successfully created",
+            "updatePassword": "Password has been updated successfully",
+            "updateUser": "User has been updated successfully",
+            "uploadProfileImage": "User profile image has been uploaded successfully",
+            "deleteUser": "User has been deleted successfully",
+            "updateEula": "",
+            "connectWallet": "Wallet has been connected successfully."
+        },
+        "error": {
+            "ownRoleChange": "Not allowed to change own role.",
+            "invalidUserRole": "Invalid user role",
+            "uploadProfilePicture": "You dont have a permission to upload profile picture",
+            "invalidWalletId": "Invalid wallet Id",
+            "wallet_connected_other_user": "Wallet is already connected to an existing user",
+            "userAlreadyExist": "There is an user account with the email-id",
+            "walletAlreadyExists": "Wallet Account already in use."
+        }
+    },
+    "artist": {
+        "success": {
+            "createArtist": "Artist has been successfully created",
+            "updateArtist": "Artist has been updated successfully",
+            "uploadProfileImage": "Artist profile image has been uploaded successfully",
+            "deleteArtist": "Artist has been deleted successfully"
+        },
+        "error": {
+            "uploadProfilePicture": "You dont have a permission to upload a profile picture",
+            "uploadLogoPicture": "You dont have a permission to upload a logo picture",
+            "subDomainNotAvailable": "{{subDomain}} is not available for activation, please change the sub-domain name and retry",
+            "artistAlreadyExist": "There is an existing artist account with the email-id"
+        }
+    },
+    "resource": {
+        "success": {
+            "markResourceCategory": "Updated Successfully",
+            "updateFavorite": "Updated Successfully",
+            "updateWatchlist": "Updated Successfully",
+            "nftSale": "Updated Successfully"
+        },
+        "error": {
+            "AddToFavorite": "Unable to add to favorites",
+            "nftSaleQuantityExceeds": "Quantity must be less than or equal to available quantity"
+        }
+    },
+    "eula": {
+        "success": {
+            "activateEula": "Eula activated successfully",
+            "getActiveEula": "Record success",
+            "list": "Records success",
+            "createEula": "Record created successfully"
+        },
+        "error": {
+            "version_already_exists": "Unable to add. Version already exists",
+            "version_is_lower": "Unable to add. Version entered is lower than current version"
+        }
+    }
+}

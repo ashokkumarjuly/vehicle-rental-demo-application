@@ -1,0 +1,14 @@
+import * as Joi from 'joi';
+
+// DB Configurations
+
+export default {
+    DB_ORM_NAME: Joi.string().allow('sequelize').default('sequelize'),
+    DB_DIALECT: Joi.string().required().description('Database dialect required'),
+    DB_HOSTNAME: Joi.string().required().description('Database host required'),
+    DB_PORT: Joi.number().required().description('Database Port required'),
+    DB_USERNAME: Joi.string().required().description('Database username required'),
+    DB_PASSWORD: Joi.string().allow('').description('Database password required'),
+    DB_NAME: Joi.string().required().description('Database Name required'),
+    DB_OPERATOR_ALIASES: Joi.boolean().default(false)
+};
